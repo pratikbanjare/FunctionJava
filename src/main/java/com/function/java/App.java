@@ -12,14 +12,14 @@ public class App {
 
     public static void main(String[] args) {
 
-        final FunctionOvertime sales = (time) -> EXPECTED_SALES_FROM_JAN_TO_DEC[time-1];
+        final FunctionOvertime sales = FunctionOvertime.monthByMonth(EXPECTED_SALES_FROM_JAN_TO_DEC);
 
-        final FunctionOvertime fixedCost = time -> 15.0;
+        final FunctionOvertime fixedCost = FunctionOvertime.constantValue( 15.0);
 
-        final FunctionOvertime incrementalCost = time -> 5.0 + 1.5 * time;
+        final FunctionOvertime incrementalCost = FunctionOvertime.line( 5.0,1.5);
 
         final FunctionOvertime profit =
-                (time) -> sales.valueAt(time) - (fixedCost.valueAt(time) + incrementalCost.valueAt(time));
+                FunctionOvertime.combinationOf3(sales, incrementalCost, fixedCost, (s, ic, fc) -> s - ic - fc);
 
         double total = 0.0;
         for (int i = 1; i<=EXPECTED_SALES_FROM_JAN_TO_DEC.length; ++i){
